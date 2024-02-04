@@ -52,6 +52,60 @@ def test_final_quarter_data(output, *args) -> None:
     assert len(output) > 0, 'No data loaded for the final quarter of 2020'
 
 
-------------Question 3 -----------
+------------Question 2, 3, 4, 5 -----------
+if 'transformer' not in globals():
+    from mage_ai.data_preparation.decorators import transformer
+if 'test' not in globals():
+    from mage_ai.data_preparation.decorators import test
+import pandas as pd
+
+@transformer
+def transform(data, *args, **kwargs):
+    """
+    Data transformer block for the specified tasks.
+
+    Args:
+        data: The output from the upstream parent block
+        args: The output from any additional upstream blocks (if applicable)
+
+    Returns:
+        pandas.DataFrame: Transformed data
+    """
+    # Remove rows where passenger count is 0 or trip distance is 0
+    data = data[(data['passenger_count'] > 0) & (data['trip_distance'] > 0)]
+
     # Create a new column lpep_pickup_date
     data['lpep_pickup_date'] = pd.to_datetime(data['lpep_pickup_datetime']).dt.date
+
+    # Rename columns in Camel Case to Snake Case
+    original_columns = set(data.columns)
+    data = data.rename(columns=lambda x: x.lower() if '_' not in x else x)
+    new_columns = set(data.columns) - original_columns
+
+    # Add assertions
+    assert data['vendorid'].isin(data['vendorid']).all(), 'Vendor ID is not in existing values'
+    assert (data['passenger_count'] > 0).all(), 'Passenger count is not greater than 0'
+    assert (data['trip_distance'] > 0).all(), 'Trip distance is not greater than 0'
+
+    # Print the answer to Question 2
+    print(f"Answer to Question 2: {len(data)} rows are left after filtering")
+
+    # Print the answer to Question 4
+    unique_vendor_ids = data['vendorid'].unique()
+    print(f"Answer to Question 4: Existing values of VendorID are {', '.join(map(str, unique_vendor_ids))}")
+
+    # Print the answer to Question 5
+    print(f"Answer to Question 5: {len(new_columns)} columns need to be renamed to snake case")
+
+    return data
+
+
+@test
+def test_output(output, *args) -> None:
+    """
+    Test code for testing the output of the block.
+    """
+    assert output is not None, 'The output is undefined'
+    assert isinstance(output, pd.DataFrame), 'Output is not a DataFrame'
+    assert len(output) > 0, 'No data after transformation'
+
