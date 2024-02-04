@@ -1,3 +1,4 @@
+--------------Question 1 ------------
 import io
 import pandas as pd
 import requests
@@ -49,3 +50,8 @@ def test_final_quarter_data(output, *args) -> None:
     """
     assert output is not None, 'The output is undefined'
     assert len(output) > 0, 'No data loaded for the final quarter of 2020'
+
+
+------------Question 3 -----------
+    # Create a new column lpep_pickup_date
+    data['lpep_pickup_date'] = pd.to_datetime(data['lpep_pickup_datetime']).dt.date
