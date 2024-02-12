@@ -1,0 +1,8 @@
+-----------Question 1. What is count of records for the 2022 Green Taxi Data?
+SELECT COUNT(*)
+FROM `dtc-de-course2024.dtc_green_taxi_2022.green-taxi-data-2022`;
+
+----------Question 3. How many records have a fare_amount of 0?
+SELECT COUNT(*)
+FROM `dtc-de-course2024.dtc_green_taxi_2022.green-taxi-data-2022`
+WHERE fare_amount = 0;
